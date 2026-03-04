@@ -48,7 +48,7 @@ README.md
 
 # Setup Instructions
 ## 1. Clone the Repository
-git clone https://github.com/YOUR_USERNAME/notes-management-api.git
+git clone https://github.com/BRshiva/notes-management-api.git
 
 ## 2. Navigate to Project Folder
 cd notes-management-api
