@@ -1,127 +1,287 @@
-Kanban Task Management Application
-Live Demo
+# Notes Management API
 
-https://kanban-task-management-application-woad.vercel.app/
+A production-ready REST API that allows authenticated users to create and manage personal notes.
+The application implements authentication, ownership enforcement, and role-based access control.
 
-About The Project
+This project was developed as part of a backend assignment to demonstrate API design, authentication, and database integration.
 
-This is a single-page Kanban Task Management web application developed to provide a seamless and interactive interface for users to create, manage, and organize tasks across different workflow stages.
+---
 
-The application is built to be lightweight and fast, featuring a custom glassmorphism user interface and persistent local storage. This ensures that the board state remains perfectly intact even after a page refresh.
+# Features
 
-About the Author
+* JWT Authentication
+* Secure password hashing using **bcrypt**
+* Role-Based Access Control (RBAC)
+* Notes CRUD operations
+* Pagination and search support
+* Refresh token mechanism
+* Swagger API documentation
+* Dockerized setup
 
-Shiva Suman
+---
 
-Passionate about frontend development, clean UI/UX design, and building interactive, user-centric web applications.
+# Tech Stack
 
-Features
+### Backend
 
-This project successfully implements all core requirements and optional enhancements from the task prompt.
+* Node.js
+* Express.js
 
-Interactive Kanban Board
+### Database
 
-Default workflow columns include:
+* PostgreSQL
 
-Todo
+### Authentication
 
-In Progress
+* JWT (JSON Web Tokens)
 
-Done
+### Tools
 
-Users can visually manage tasks by moving them across these stages.
+* Swagger (OpenAPI)
+* Docker
 
-Native Drag and Drop
+---
 
-Tasks can be smoothly dragged between columns with immediate user interface updates.
+# Project Structure
 
-Task Management
+```
+src/
+ ├── config/
+ │     db.js
+ │
+ ├── middleware/
+ │     authMiddleware.js
+ │     roleMiddleware.js
+ │     errorMiddleware.js
+ │
+ ├── routes/
+ │     authRoutes.js
+ │     noteRoutes.js
+ │
+ └── app.js
 
-Users can:
+server.js
+Dockerfile
+README.md
+.env.example
+```
 
-Create tasks with titles and descriptions
+---
 
-Edit existing tasks
+# Setup Instructions
 
-Delete tasks when they are no longer required
+## 1. Clone the repository
 
-State Persistence
+```
+git clone https://github.com/BRshiva/notes-management-api.git
+```
 
-Task data is automatically saved in the browser's localStorage, allowing tasks to remain available even after refreshing the page.
+## 2. Navigate into the project folder
 
-Fully Responsive Design
+```
+cd notes-management-api
+```
 
-The application is designed to function properly on both desktop and mobile screens.
+## 3. Install dependencies
 
-Priority Tags (Enhancement)
+```
+npm install
+```
 
-Tasks can be assigned priority levels:
+## 4. Configure environment variables
 
-High
+Create a `.env` file in the root directory.
 
-Medium
+Copy values from `.env.example`.
 
-Low
+Example:
 
-This helps users identify and manage important tasks efficiently.
+```
+PORT=5000
+DATABASE_URL=postgresql://user:password@localhost:5432/notesdb
+JWT_SECRET=your_secret
+REFRESH_SECRET=your_refresh_secret
+```
 
-Search and Filter (Enhancement)
+## 5. Start the server
 
-Users can instantly search through tasks using:
+```
+npm run dev
+```
 
-Task title
+The server will run at:
 
-Task description
+```
+http://localhost:5000
+```
 
-Theme Toggle (Enhancement)
+---
 
-The application allows users to switch between:
+# API Documentation
 
-Dark mode
+Swagger UI is available when the server is running.
 
-Light mode
+Open the following URL in your browser:
 
-Built With
+```
+http://localhost:5000/api-docs
+```
 
-This project strictly adheres to the requested technology stack:
+You can test all API endpoints directly from Swagger.
 
-HTML
+---
 
-CSS
+# API Endpoints
 
-JavaScript
+## Authentication
 
-Deployment platform:
+| Method | Endpoint         | Description                   |
+| ------ | ---------------- | ----------------------------- |
+| POST   | `/auth/register` | Register a new user           |
+| POST   | `/auth/login`    | Login user and receive tokens |
+| POST   | `/auth/refresh`  | Generate new access token     |
 
-Vercel
+---
 
-Project Structure
-Kanban-Task-Management-Application
-│
-├── index.html
-├── style.css
-├── app.js
-├── background.jpg
-└── README.md
-How to Run Locally
-Step 1
+## Notes
 
-Clone the repository or download the ZIP file.
+| Method | Endpoint     | Description                      |
+| ------ | ------------ | -------------------------------- |
+| GET    | `/notes`     | Get notes for authenticated user |
+| POST   | `/notes`     | Create a new note                |
+| PUT    | `/notes/:id` | Update an existing note          |
+| DELETE | `/notes/:id` | Delete a note                    |
 
-git clone https://github.com/BRshiva/Kanban-Task-Management-Application.git
-Step 2
+---
 
-Ensure all files are in the same folder:
+# Role-Based Access Control
 
-index.html
-style.css
-app.js
-background.jpg
-Step 3
+### User Role
 
-Double-click index.html to open and run the application in any modern web browser.
+* Can manage only their own notes
 
-Deployment
+### Admin Role
 
-Live application:
-https://kanban-task-management-application-woad.vercel.app/
+* Can view all notes
+* Can delete any note
+
+---
+
+# Example API Requests
+
+## Register User
+
+```
+POST /auth/register
+```
+
+Request body:
+
+```
+{
+  "email": "test@example.com",
+  "password": "123456"
+}
+```
+
+---
+
+## Login
+
+```
+POST /auth/login
+```
+
+Request body:
+
+```
+{
+  "email": "test@example.com",
+  "password": "123456"
+}
+```
+
+Response example:
+
+```
+{
+  "accessToken": "JWT_TOKEN",
+  "refreshToken": "REFRESH_TOKEN"
+}
+```
+
+---
+
+## Create Note
+
+```
+POST /notes
+```
+
+Headers:
+
+```
+Authorization: Bearer YOUR_ACCESS_TOKEN
+```
+
+Request body:
+
+```
+{
+  "title": "My First Note",
+  "content": "Example content"
+}
+```
+
+---
+
+# Pagination and Search
+
+Get paginated notes:
+
+```
+GET /notes?page=1&limit=10
+```
+
+Search notes by title:
+
+```
+GET /notes?search=meeting
+```
+
+---
+
+# Docker Setup
+
+Build Docker image:
+
+```
+docker build -t notes-api .
+```
+
+Run container:
+
+```
+docker run -p 5000:5000 notes-api
+```
+
+---
+
+# Environment Variables
+
+The application requires the following environment variables:
+
+```
+PORT
+DATABASE_URL
+JWT_SECRET
+REFRESH_SECRET
+```
+
+---
+
+# Author
+
+**Shiva Suman**
+
+Backend project demonstrating REST API design, authentication, and role-based access control.
